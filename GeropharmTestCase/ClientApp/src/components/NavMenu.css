@@ -1,0 +1,44 @@
+﻿
+
+
+
+/*.TableRow {
+    border: 1px dashed black;
+}*/
+
+
+
+/* long-term style */
+
+.TableRow {
+    z-index: 10;
+    position: relative;
+    margin-top: 0px;
+    display: flex;
+    background: white;
+    transition: all 0.2s ease-out;
+    text-align: center;
+    margin-top: 15px;
+    
+}
+
+.TableCell {
+    width: calc(100%/1);
+    text-align: center;
+    width: 150px;
+    height: 100px;
+    margin-left: 15px;
+    margin-right: 15px;
+    
+}
+
+    .TableCell:nth-child(1) {
+        margin-left: 30px;
+    }
+
+    /*.TableCell:nth-last-child() {
+        margin-right: 30px;
+        background-color: black;
+    }*/
+
+
