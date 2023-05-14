@@ -35,8 +35,8 @@ export class Home extends Component {
     window.onload = this.tuneRowsAndColumns;
     window.onresize = this.tuneRowsAndColumns;
 
-    this.row = 1;
-    this.column = 1;
+    this.row = 0;
+    this.column = 0;
 
     this.array = new Array(this.row);
     for (var i = 0; i < this.column; i++) {
@@ -51,8 +51,7 @@ export class Home extends Component {
     this.state = {
         name: 'React',
         items: this.array, 
-        projects1: [], 
-        loading: true
+        projects: []
     };
 
 
@@ -62,7 +61,7 @@ export class Home extends Component {
 
 
     componentDidMount() {
-        this.populateWeatherData();
+        this.getProjectsFromDb();
     }
 
   toggleNavbar () {
@@ -71,60 +70,65 @@ export class Home extends Component {
       });
     }
 
-    tuneColumns = () =>  {
-        let contentWidth = document.getElementById('mainContent').clientWidth;
-        var possibleColumns = Math.floor(contentWidth / 180);
-        this.column = possibleColumns;
+    tuneRowsAndColumns = () => {
+        let contentWidth = document.getElementById('mainContent').clientWidth ;
+        let contentHeight = document.getElementById('mainContent').clientHeight;
+        var possibleColumns = Math.floor((contentWidth - 60) / 180);
+        var possibleRows = Math.floor((contentHeight - 60) / 130);
 
-        const newArray = new Array(this.row);
-        for (var i = 0; i < this.row; i++) {
+        
+        
+
+        const elementsColumns = document.querySelectorAll('.TableCell');
+        for (let i = 0; i < elementsColumns.length; i++) {
+            var marginPx = Math.floor((contentWidth - possibleColumns * 150) / (possibleColumns + 1)) / 2;
+            elementsColumns[i].style.marginLeft = `${marginPx}px`;
+            elementsColumns[i].style.marginRight = `${marginPx}px`;
+        }
+        //const firstColumn = document.querySelector('.TableCell:nth-child(1)');
+        //var leftPx = Math.floor((contentWidth - possibleColumns * 150) / (possibleColumns + 1));
+        //firstColumn.style.marginLeft = leftPx;
+
+        const elementsRows = document.querySelectorAll('.TableRow');
+        for (let i = 0; i < elementsRows.length; i++) {
+            var marginTopPx = Math.floor((contentHeight - possibleRows * 100) / (possibleRows + 1)) / 2;
+            elementsRows[i].style.marginTop = `${marginTopPx}px`;
+        }
+
+
+        
+
+        //const firstEl = document.querySelector('.TableCell: nth - child(1)');
+        //firstEl.style.marginLeft = `${marginLeftPx}px`;
+
+
+        var possibleSize = possibleColumns * possibleRows;
+        var currentSize = this.row * this.column;
+        const newArray = new Array(possibleRows);
+        if (possibleSize > currentSize) {
+            this.getProjectsFromDb(possibleSize - currentSize, currentSize + 1);
+        }
+        else {
+            this.getProjectsFromDb(possibleSize, 1);
+        }
+
+        var projects = this.state.projects;
+        for (var i = 0; i < possibleRows; i++) {
             newArray[i] = new Array(possibleColumns);
         }
+        for (let i = 0; i < possibleRows * possibleColumns; i++) {
 
-        this.populateWeatherData(this.row * possibleColumns);
-        for (let i = 0; i < this.row * possibleColumns; i++) {
-
-            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = this.state.projects1[i].name;
+            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = i // this.state.projects[i].name //this.state.projects[i].name;
         }
-
-        
-        this.setState(prevState => ({
-            ...prevState,
-            items: newArray
-        }))
-
-    }
-
-    tuneRows = () => {
-
-        let contentHeight = document.getElementById('mainContent').clientHeight;
-        var possibleRows = Math.floor(contentHeight / 130);
-
-        const newArray = new Array(possibleRows);
-        for (var i = 0; i < possibleRows; i++) {
-            newArray[i] = new Array(this.column);
-        }
-
-        this.populateWeatherData(possibleRows * this.column);
-
-        for (let i = 0; i < possibleRows * this.column; i++) {
-
-            newArray[Math.floor(i / this.column)][i % this.column] = this.state.projects1[i].name;
-        }
-
         this.row = possibleRows;
+        this.column = possibleColumns;
         this.setState(prevState => ({
             ...prevState,
             items: newArray
         }))
     }
 
-    tuneRowsAndColumns = () => {
-        this.tuneColumns();
-        this.tuneRows();
-        
-    }
-
+    
     
 
     
@@ -139,8 +143,8 @@ export class Home extends Component {
 
 
                 <div>
-                    <NavLink tag={ Link} className={styles.leftSide} to="/items">go</NavLink>
-                    {/*<h2 className={styles.leftSide}>Left side</h2>*/}
+                    
+                    <h2 className={styles.leftSide}>Left side</h2>
                     
                 </div>
 
@@ -154,7 +158,7 @@ export class Home extends Component {
                                         <Slide key={item[1]}>
                                             <Row>
                                                 {item.map(prop => (
-                                                    <Cell>
+                                                    <Cell id = "cell">
                                                         <button className={styles.button}>
                                                             {prop}
                                                         </button>
@@ -191,9 +195,18 @@ export class Home extends Component {
     }
 
 
-    async populateWeatherData(count) {
-        const response = await fetch(`project?firstId=1&count=${count}`);
+    async getProjectsFromDb(count, firstId = 1) {
+        // `project?firstId=${firstId}&count=${count}`
+        const response = await fetch(`project?firstId=${firstId}&count=${count}`);
         const data = await response.json();
-        this.setState({ projects1: data, loading: false });
+        if (firstId == 1) {
+            this.setState({ projects: data });
+        }
+        else {
+            for (var i in data) {
+                this.state.projects.push(i);
+            }
+        }
+        
     }
 }

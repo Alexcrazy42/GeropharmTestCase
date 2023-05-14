@@ -1,5 +1,6 @@
 using GeropharmTestCase.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,9 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseNpgsql("Host=localhost; Port = 5432; Database=VK; Username=postgres; Password=26031974yula;")
-);
+
 
 
 var app = builder.Build();
