@@ -6,7 +6,7 @@ using GeropharmTestCase.Data;
 namespace GeropharmTestCase.Controllers
 {
     [ApiController]
-    [Route("projects")]
+    [Route("[controller]")]
     public class ProjectController : ControllerBase
     {
         private readonly ApplicationContext _context;
@@ -17,9 +17,14 @@ namespace GeropharmTestCase.Controllers
         }
 
 
+
+
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<object>>> GetAllProjects() // 
         {
+
+
+
             if (_context.Projects == null)
             {
                 return NotFound();
@@ -47,7 +52,7 @@ namespace GeropharmTestCase.Controllers
                            where p.Id >= firstId && p.Id < (firstId + count)
                            select new
                            {
-                               Id = p.Id, 
+                               Id = p.Id,
                                Name = p.Name,
                                Descriprion = p.Description
                            };

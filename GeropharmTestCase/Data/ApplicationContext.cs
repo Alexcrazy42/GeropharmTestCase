@@ -28,10 +28,11 @@ namespace GeropharmTestCase.Data
                 string connection = "Host=localhost; Port = 5432; Database=VK; Username=postgres; Password=26031974yula;";
                 optionsBuilder.UseNpgsql(connection);
                 optionsBuilder.EnableSensitiveDataLogging();
+                
+
             }
             else
             {
-
                 var db = new ApplicationContext();
                 if (db.Projects.Count() == 0)
                 {
@@ -42,15 +43,11 @@ namespace GeropharmTestCase.Data
                     };
                     db.Add(firstProject);
                     db.SaveChanges();
-                }
-                else if (db.Projects.Count() < 100)
-                {
-                    for (int i = 0; i < 100 - db.Projects.Count(); i++)
+                    for (int i = 0; i < 149; i++)
                     {
                         var lastProject = db.Projects
-                            .OrderByDescending(p => p.Id)
-                            .FirstOrDefault();
-
+                                .OrderByDescending(p => p.Id)
+                                .FirstOrDefault();
                         var newProject = new Project()
                         {
 
@@ -62,12 +59,8 @@ namespace GeropharmTestCase.Data
 
                     }
                 }
-                else
-                {
-                    var projectToDelete = db.Projects.ToList();
-                    db.Projects.RemoveRange(projectToDelete);
-                    db.SaveChanges();
-                }
+                
+
             }
         }
     }

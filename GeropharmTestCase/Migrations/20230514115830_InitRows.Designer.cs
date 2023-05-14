@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GeropharmTestCase.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230513202431_InitialCreate3")]
-    partial class InitialCreate3
+    [Migration("20230514115830_InitRows")]
+    partial class InitRows
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
