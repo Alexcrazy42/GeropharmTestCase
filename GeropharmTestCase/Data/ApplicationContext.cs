@@ -43,9 +43,6 @@ namespace GeropharmTestCase.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var folder = Environment.SpecialFolder.LocalApplicationData;
-                var path = Environment.GetFolderPath(folder);
-                string DbPath = System.IO.Path.Join(path, "Db.db");
                 optionsBuilder.UseSqlite($"Data Source=Db.db");
             } 
         }
