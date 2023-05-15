@@ -6,7 +6,9 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 
 const context = [
     "/swagger",
-    "/project"
+    "/project", 
+    "/project/all", 
+    "/project/UploadFile",
 ];
 
 module.exports = function(app) {

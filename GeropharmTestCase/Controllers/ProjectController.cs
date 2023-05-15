@@ -28,9 +28,6 @@ namespace GeropharmTestCase.Controllers
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<object>>> GetAllProjects() // 
         {
-
-
-
             if (_context.Projects == null)
             {
                 return NotFound();
@@ -71,8 +68,10 @@ namespace GeropharmTestCase.Controllers
             return await projects.ToListAsync();
         }
 
+
+
         [HttpPost]
-        [Route("UploadFile")]
+        //[Route("UploadFile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken cancellationToken)
@@ -88,7 +87,9 @@ namespace GeropharmTestCase.Controllers
             {
                 var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
                 fileName = DateTime.Now.Ticks.ToString() + extension;
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Files");
+                string directoryGoDown = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\"));
+                //string directoryGoDown = Path.Combine(Directory.GetCurrentDirectory(), "..");
+                var filePath = Path.Combine(directoryGoDown, "Upload\\Files");
 
                 if (!Directory.Exists(filePath))
                 {

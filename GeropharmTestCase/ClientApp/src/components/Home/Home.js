@@ -35,8 +35,8 @@ export class Home extends Component {
 
 
 
-        this.row = 1;
-        this.column = 1;
+        this.row = 0;
+        this.column = 0;
 
         this.array = new Array(this.row);
         for (var i = 0; i < this.column; i++) {
@@ -50,13 +50,11 @@ export class Home extends Component {
 
         window.onload = this.tuneRowsAndColumns;
         window.onresize = this.tuneRowsAndColumns;
-        //window.addEventListener('load', () => {
-        //    this.tuneRowsAndColumns();
-        //});
-        window.addEventListener('resize', () => {
+        window.addEventListener('load', () => {
             this.tuneRowsAndColumns();
+
         });
-        window.addEventListener('pageshow', () => {
+        window.addEventListener('resize', () => {
             this.tuneRowsAndColumns();
         });
 
@@ -193,22 +191,20 @@ export class Home extends Component {
 
 
     async getProjectsFromDb(count = 1, firstId = 1) {
-        // `project?firstId=${firstId}&count=${count}`
-        //
-        console.log(`project?firstId=${firstId}&count=${count}`);
-        const response = await fetch(`project/all`);
+        
+        const response = await fetch(`project/all`); // запрос для недостающих проектов - `project?firstId=${firstId}&count=${count}`
         const data = await response.json();
+        this.setState({ projects: data });
+
+        // логика при неполном запросе
         if (firstId == 1) {
             this.setState({ projects: data });
-            //console.log(this.state.projects)
         }
         else {
-            //for (var i in data) {
-            //    this.state.projects.push(i);
-            //}
-            this.state.projects.push(data);
-            //console.log(this.state.projects)
+            var newData = this.state.projects.push(data);
+            this.setState({ projects: newData });
         }
+            
 
     }
 }
