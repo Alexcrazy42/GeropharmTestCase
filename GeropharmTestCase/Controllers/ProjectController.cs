@@ -2,6 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using GeropharmTestCase.Models;
 using GeropharmTestCase.Data;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace GeropharmTestCase.Controllers
 {
@@ -65,5 +71,47 @@ namespace GeropharmTestCase.Controllers
             return await projects.ToListAsync();
         }
 
+        [HttpPost]
+        [Route("UploadFile")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken cancellationToken)
+        {
+            var result = await WriteFile(file);
+            return Ok(result);
+        }
+
+        private async Task<string> WriteFile(IFormFile file)
+        {
+            string fileName = "";
+            try
+            {
+                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                fileName = DateTime.Now.Ticks.ToString() + extension;
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Files");
+
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+
+                if (Directory.Exists(filePath + fileName))
+                {
+                    Directory.Delete(filePath + fileName);
+                }
+
+                var exactPath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Files", fileName);
+                using (var stream = new FileStream(exactPath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Directory.GetCurrentDirectory();
+        }
     }
 }

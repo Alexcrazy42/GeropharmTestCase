@@ -33,8 +33,13 @@ export class Home extends Component {
 
 
     window.onload = this.tuneRowsAndColumns;
-    window.onresize = this.tuneRowsAndColumns;
-
+      window.onresize = this.tuneRowsAndColumns;
+      window.addEventListener('load', () => {
+          this.tuneRowsAndColumns();
+      });
+      window.addEventListener('resize', () => {
+          this.tuneRowsAndColumns(); 
+      });
     this.row = 0;
     this.column = 0;
 
@@ -46,7 +51,8 @@ export class Home extends Component {
     for (let i = 0; i < this.row*this.column; i++) {
 
         this.array[Math.floor(i / this.column)][i % this.column] = ' ';
-    }
+      }
+      this.checked = true;
     
     this.state = {
         name: 'React',
@@ -81,44 +87,30 @@ export class Home extends Component {
 
         const elementsColumns = document.querySelectorAll('.TableCell');
         for (let i = 0; i < elementsColumns.length; i++) {
-            var marginPx = Math.floor((contentWidth - possibleColumns * 150) / (possibleColumns + 1)) / 2;
+            var marginPx = Math.floor((contentWidth - possibleColumns * 150) / (possibleColumns + 1));
             elementsColumns[i].style.marginLeft = `${marginPx}px`;
-            elementsColumns[i].style.marginRight = `${marginPx}px`;
         }
-        //const firstColumn = document.querySelector('.TableCell:nth-child(1)');
-        //var leftPx = Math.floor((contentWidth - possibleColumns * 150) / (possibleColumns + 1));
-        //firstColumn.style.marginLeft = leftPx;
 
         const elementsRows = document.querySelectorAll('.TableRow');
         for (let i = 0; i < elementsRows.length; i++) {
-            var marginTopPx = Math.floor((contentHeight - possibleRows * 100) / (possibleRows + 1)) / 2;
+            var marginTopPx = Math.floor((contentHeight - possibleRows * 100) / (possibleRows + 1));
             elementsRows[i].style.marginTop = `${marginTopPx}px`;
         }
-
-
-        
-
-        //const firstEl = document.querySelector('.TableCell: nth - child(1)');
-        //firstEl.style.marginLeft = `${marginLeftPx}px`;
-
 
         var possibleSize = possibleColumns * possibleRows;
         var currentSize = this.row * this.column;
         const newArray = new Array(possibleRows);
-        if (possibleSize > currentSize) {
-            this.getProjectsFromDb(possibleSize - currentSize, currentSize + 1);
-        }
-        else {
+        if (possibleSize != currentSize) {
             this.getProjectsFromDb(possibleSize, 1);
         }
-
+        
         var projects = this.state.projects;
         for (var i = 0; i < possibleRows; i++) {
             newArray[i] = new Array(possibleColumns);
         }
         for (let i = 0; i < possibleRows * possibleColumns; i++) {
 
-            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = i // this.state.projects[i].name //this.state.projects[i].name;
+            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = this.state.projects[i].name // projects[i].name // this.state.projects[i].name //this.state.projects[i].name;
         }
         this.row = possibleRows;
         this.column = possibleColumns;
@@ -141,10 +133,15 @@ export class Home extends Component {
                     
                 </div>
 
-
+                
                 <div>
+
+                    <ul>
+                        <li><h2 className={styles.leftSide}>Left side</h2></li>
+                        
+                    </ul>
                     
-                    <h2 className={styles.leftSide}>Left side</h2>
+                    
                     
                 </div>
 
@@ -195,17 +192,22 @@ export class Home extends Component {
     }
 
 
-    async getProjectsFromDb(count, firstId = 1) {
+    async getProjectsFromDb(count = 1, firstId = 1) {
         // `project?firstId=${firstId}&count=${count}`
-        const response = await fetch(`project?firstId=${firstId}&count=${count}`);
+        //
+        console.log(`project?firstId=${firstId}&count=${count}`);
+        const response = await fetch(`project/all`);
         const data = await response.json();
         if (firstId == 1) {
             this.setState({ projects: data });
+            //console.log(this.state.projects)
         }
         else {
-            for (var i in data) {
-                this.state.projects.push(i);
-            }
+            //for (var i in data) {
+            //    this.state.projects.push(i);
+            //}
+            this.state.projects.push(data);
+            //console.log(this.state.projects)
         }
         
     }
