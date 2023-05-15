@@ -1,3 +1,4 @@
+// нужный
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
@@ -24,66 +25,88 @@ const Slide = ({ children, ...props }) => (
 )
 
 export class Home extends Component {
-  static displayName = Home.name;
+    static displayName = Home.name;
 
-  constructor (props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
+        this.toggleNavbar = this.toggleNavbar.bind(this);
 
 
-    window.onload = this.tuneRowsAndColumns;
-      window.onresize = this.tuneRowsAndColumns;
-      window.addEventListener('load', () => {
-          this.tuneRowsAndColumns();
-      });
-      window.addEventListener('resize', () => {
-          this.tuneRowsAndColumns(); 
-      });
-    this.row = 0;
-    this.column = 0;
 
-    this.array = new Array(this.row);
-    for (var i = 0; i < this.column; i++) {
-        this.array[i] = new Array(this.column);
+
+        this.row = 1;
+        this.column = 1;
+
+        this.array = new Array(this.row);
+        for (var i = 0; i < this.column; i++) {
+            this.array[i] = new Array(this.column);
+        }
+
+        for (let i = 0; i < this.row * this.column; i++) {
+
+            this.array[Math.floor(i / this.column)][i % this.column] = ' ';
+        }
+
+        window.onload = this.tuneRowsAndColumns;
+        window.onresize = this.tuneRowsAndColumns;
+        //window.addEventListener('load', () => {
+        //    this.tuneRowsAndColumns();
+        //});
+        window.addEventListener('resize', () => {
+            this.tuneRowsAndColumns();
+        });
+        window.addEventListener('pageshow', () => {
+            this.tuneRowsAndColumns();
+        });
+
+        this.state = {
+            name: 'React',
+            items: this.array,
+            projects: []
+        };
+
+
+
+
     }
-
-    for (let i = 0; i < this.row*this.column; i++) {
-
-        this.array[Math.floor(i / this.column)][i % this.column] = ' ';
-      }
-      this.checked = true;
-    
-    this.state = {
-        name: 'React',
-        items: this.array, 
-        projects: []
-    };
-
-
-
-      
-  }
 
 
     componentDidMount() {
         this.getProjectsFromDb();
+
     }
 
-  toggleNavbar () {
-      this.setState({
-          collapsed: !this.state.collapsed
-      });
+    toggleNavbar() {
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
     }
 
     tuneRowsAndColumns = () => {
-        let contentWidth = document.getElementById('mainContent').clientWidth ;
+        let contentWidth = document.getElementById('mainContent').clientWidth;
         let contentHeight = document.getElementById('mainContent').clientHeight;
         var possibleColumns = Math.floor((contentWidth - 60) / 180);
         var possibleRows = Math.floor((contentHeight - 60) / 130);
 
-        
-        
+        var possibleSize = possibleColumns * possibleRows;
+        var currentSize = this.row * this.column;
+
+        this.row = possibleRows;
+        this.column = possibleColumns;
+        const newArray = new Array(possibleRows);
+        if (possibleSize > currentSize) {
+            this.getProjectsFromDb(possibleSize - currentSize, currentSize + 1);
+        }
+
+        for (var i = 0; i < possibleRows; i++) {
+            newArray[i] = new Array(possibleColumns);
+        }
+        for (let i = 0; i < possibleRows * possibleColumns; i++) {
+
+            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = this.state.projects[i].name // projects[i].name // this.state.projects[i].name //this.state.projects[i].name;
+        }
+
 
         const elementsColumns = document.querySelectorAll('.TableCell');
         for (let i = 0; i < elementsColumns.length; i++) {
@@ -97,52 +120,29 @@ export class Home extends Component {
             elementsRows[i].style.marginTop = `${marginTopPx}px`;
         }
 
-        var possibleSize = possibleColumns * possibleRows;
-        var currentSize = this.row * this.column;
-        const newArray = new Array(possibleRows);
-        if (possibleSize != currentSize) {
-            this.getProjectsFromDb(possibleSize, 1);
-        }
-        
-        var projects = this.state.projects;
-        for (var i = 0; i < possibleRows; i++) {
-            newArray[i] = new Array(possibleColumns);
-        }
-        for (let i = 0; i < possibleRows * possibleColumns; i++) {
-
-            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = this.state.projects[i].name // projects[i].name // this.state.projects[i].name //this.state.projects[i].name;
-        }
-        this.row = possibleRows;
-        this.column = possibleColumns;
         this.setState(prevState => ({
             ...prevState,
             items: newArray
         }))
     }
 
-    
-    
 
-    
+
+
+
     render() {
         return (
             <>
-                
+
                 <div className={styles.header}>
                     <h3 className={styles.header}>Header</h3>
-                    
+
                 </div>
 
-                
-                <div>
 
-                    <ul>
-                        <li><h2 className={styles.leftSide}>Left side</h2></li>
-                        
-                    </ul>
-                    
-                    
-                    
+                <div>
+                    <h2 className={styles.leftSide}>Left side</h2>
+
                 </div>
 
                 <div className={styles.mainContent} id="mainContent">
@@ -150,12 +150,12 @@ export class Home extends Component {
                     <div slassName={styles.table}>
                         <Table>
                             <Body>
-                                <TransitionGroup> 
+                                <TransitionGroup>
                                     {this.state.items.map(item => (
                                         <Slide key={item[1]}>
                                             <Row>
                                                 {item.map(prop => (
-                                                    <Cell id = "cell">
+                                                    <Cell id="cell">
                                                         <button className={styles.button}>
                                                             {prop}
                                                         </button>
@@ -167,14 +167,14 @@ export class Home extends Component {
                                 </TransitionGroup>
                             </Body>
                         </Table>
-                        
-                    </div>
-                    
 
-                    
+                    </div>
+
+
+
                 </div>
 
-                
+
 
                 <div>
                     <h2 className={styles.rightSide}>Right side</h2>
@@ -186,9 +186,9 @@ export class Home extends Component {
 
 
             </>
-            
-                
-      );
+
+
+        );
     }
 
 
@@ -209,6 +209,6 @@ export class Home extends Component {
             this.state.projects.push(data);
             //console.log(this.state.projects)
         }
-        
+
     }
 }
