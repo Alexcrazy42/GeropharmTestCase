@@ -50,9 +50,6 @@ export class Home extends Component {
 
         window.onload = this.tuneRowsAndColumns;
         window.onresize = this.tuneRowsAndColumns;
-        //window.addEventListener('load', () => {
-        //    this.tuneRowsAndColumns();
-        //});
         window.addEventListener('resize', () => {
             this.tuneRowsAndColumns();
         });
@@ -204,21 +201,16 @@ export class Home extends Component {
 
     async getProjectsFromDb(count = 1, firstId = 1) {
         
-        const response = await fetch(`project?firstId=${firstId}&count=${count}`); // partial load request - `project?firstId=${firstId}&count=${count}` 
+        const response = await fetch(`project?firstId=${firstId}&count=${count}`);
         const data = await response.json();
         this.setState({ projects: data });
 
-        // logic to partial load requests
+        //logic for requests for partial loading of projects not with 1 id
         //if (firstId == 1) {
         //    this.setState({ projects: data });
-        //    //console.log(this.state.projects)
         //}
         //else {
-        //    //for (var i in data) {
-        //    //    this.state.projects.push(i);
-        //    //}
         //    this.state.projects.push(data);
-        //    //console.log(this.state.projects)
         //}
 
     }
