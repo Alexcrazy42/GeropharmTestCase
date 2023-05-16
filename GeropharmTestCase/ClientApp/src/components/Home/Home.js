@@ -1,3 +1,4 @@
+// нужный
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
@@ -49,11 +50,13 @@ export class Home extends Component {
 
         window.onload = this.tuneRowsAndColumns;
         window.onresize = this.tuneRowsAndColumns;
-        window.addEventListener('load', () => {
-            this.tuneRowsAndColumns();
-
-        });
+        //window.addEventListener('load', () => {
+        //    this.tuneRowsAndColumns();
+        //});
         window.addEventListener('resize', () => {
+            this.tuneRowsAndColumns();
+        });
+        window.addEventListener('pageshow', () => {
             this.tuneRowsAndColumns();
         });
 
@@ -190,20 +193,22 @@ export class Home extends Component {
 
 
     async getProjectsFromDb(count = 1, firstId = 1) {
-        
-        const response = await fetch(`project/all`); // request for missing projects - `project?firstId=${firstId}&count=${count}`
+        // `project?firstId=${firstId}&count=${count}`
+        //
+        console.log(`project?firstId=${firstId}&count=${count}`);
+        const response = await fetch(`project/all`);
         const data = await response.json();
-        this.setState({ projects: data });
-
-        // logic on partial request
         if (firstId == 1) {
             this.setState({ projects: data });
+            //console.log(this.state.projects)
         }
         else {
-            var newData = this.state.projects.push(data);
-            this.setState({ projects: newData });
+            //for (var i in data) {
+            //    this.state.projects.push(i);
+            //}
+            this.state.projects.push(data);
+            //console.log(this.state.projects)
         }
-            
 
     }
 }
