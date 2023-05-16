@@ -26,7 +26,7 @@ namespace GeropharmTestCase.Controllers
 
 
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<object>>> GetAllProjects() // 
+        public async Task<ActionResult<IEnumerable<object>>> GetAllProjects() 
         {
             if (_context.Projects == null)
             {
@@ -71,7 +71,7 @@ namespace GeropharmTestCase.Controllers
 
 
         [HttpPost]
-        //[Route("UploadFile")]
+        [Route("UploadFile")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken cancellationToken)

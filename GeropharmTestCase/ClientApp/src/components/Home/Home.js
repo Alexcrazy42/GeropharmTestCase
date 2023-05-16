@@ -33,7 +33,7 @@ export class Home extends Component {
         this.toggleNavbar = this.toggleNavbar.bind(this);
 
 
-
+        
 
         this.row = 0;
         this.column = 0;
@@ -73,7 +73,7 @@ export class Home extends Component {
 
 
     componentDidMount() {
-        this.getProjectsFromDb();
+        this.getProjectsFromDb(this.row * this.column, 1);
 
     }
 
@@ -84,46 +84,55 @@ export class Home extends Component {
     }
 
     tuneRowsAndColumns = () => {
-        let contentWidth = document.getElementById('mainContent').clientWidth;
-        let contentHeight = document.getElementById('mainContent').clientHeight;
-        var possibleColumns = Math.floor((contentWidth - 60) / 180);
-        var possibleRows = Math.floor((contentHeight - 60) / 130);
+        if(document.getElementById('mainContent').clientWidth != null && document.getElementById('mainContent').clientHeight != null) {
+            let contentWidth = document.getElementById('mainContent').clientWidth;
+            let contentHeight = document.getElementById('mainContent').clientHeight;
+            var possibleColumns = Math.floor((contentWidth - 60) / 180);
+            var possibleRows = Math.floor((contentHeight - 60) / 130);
 
-        var possibleSize = possibleColumns * possibleRows;
-        var currentSize = this.row * this.column;
+            var possibleSize = possibleColumns * possibleRows;
+            var currentSize = this.row * this.column;
 
-        this.row = possibleRows;
-        this.column = possibleColumns;
-        const newArray = new Array(possibleRows);
-        if (possibleSize > currentSize) {
-            this.getProjectsFromDb(possibleSize - currentSize, currentSize + 1);
+            this.row = possibleRows;
+            this.column = possibleColumns;
+            const newArray = new Array(possibleRows);
+            if (possibleSize > currentSize) {
+                this.getProjectsFromDb(possibleSize, 1);
+            }
+
+            for (var i = 0; i < possibleRows; i++) {
+                newArray[i] = new Array(possibleColumns);
+            }
+            for (let i = 0; i < possibleRows * possibleColumns; i++) {
+
+                if (this.state.projects[i].name != null) {
+                    newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = this.state.projects[i].name;
+                }
+                else {
+                    newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = ' ';
+                }
+                
+            }
+
+
+            const elementsColumns = document.querySelectorAll('.TableCell');
+            for (let i = 0; i < elementsColumns.length; i++) {
+                var marginPx = Math.floor((contentWidth - possibleColumns * 150) / (possibleColumns + 1));
+                elementsColumns[i].style.marginLeft = `${marginPx}px`;
+            }
+
+            const elementsRows = document.querySelectorAll('.TableRow');
+            for (let i = 0; i < elementsRows.length; i++) {
+                var marginTopPx = Math.floor((contentHeight - possibleRows * 100) / (possibleRows + 1));
+                elementsRows[i].style.marginTop = `${marginTopPx}px`;
+            }
+
+            this.setState(prevState => ({
+                ...prevState,
+                items: newArray
+            }))
         }
-
-        for (var i = 0; i < possibleRows; i++) {
-            newArray[i] = new Array(possibleColumns);
-        }
-        for (let i = 0; i < possibleRows * possibleColumns; i++) {
-
-            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = this.state.projects[i].name;
-        }
-
-
-        const elementsColumns = document.querySelectorAll('.TableCell');
-        for (let i = 0; i < elementsColumns.length; i++) {
-            var marginPx = Math.floor((contentWidth - possibleColumns * 150) / (possibleColumns + 1));
-            elementsColumns[i].style.marginLeft = `${marginPx}px`;
-        }
-
-        const elementsRows = document.querySelectorAll('.TableRow');
-        for (let i = 0; i < elementsRows.length; i++) {
-            var marginTopPx = Math.floor((contentHeight - possibleRows * 100) / (possibleRows + 1));
-            elementsRows[i].style.marginTop = `${marginTopPx}px`;
-        }
-
-        this.setState(prevState => ({
-            ...prevState,
-            items: newArray
-        }))
+        
     }
 
 
@@ -133,82 +142,84 @@ export class Home extends Component {
     render() {
         return (
             <>
+                <body>
+                    <div className={styles.header}>
+                        <h3 className={styles.header}>Header</h3>
 
-                <div className={styles.header}>
-                    <h3 className={styles.header}>Header</h3>
-
-                </div>
+                    </div>
 
 
-                <div>
-                    <h2 className={styles.leftSide}>Left side</h2>
+                    <div>
+                        <h3 className={styles.leftSide}>Left side</h3>
+                    </div>
 
-                </div>
+                    <div className={styles.mainContent} id="mainContent">
 
-                <div className={styles.mainContent} id="mainContent">
+                        <div slassName={styles.table}>
+                            <Table>
+                                <Body>
+                                    <TransitionGroup>
+                                        {this.state.items.map(item => (
+                                            <Slide key={item[1]}>
+                                                <Row>
+                                                    {item.map(prop => (
+                                                        <Cell id="cell">
+                                                            <button className={styles.button}>
+                                                                {prop}
+                                                            </button>
+                                                        </Cell>
+                                                    ))}
+                                                </Row>
+                                            </Slide>
+                                        ))}
+                                    </TransitionGroup>
+                                </Body>
+                            </Table>
 
-                    <div slassName={styles.table}>
-                        <Table>
-                            <Body>
-                                <TransitionGroup>
-                                    {this.state.items.map(item => (
-                                        <Slide key={item[1]}>
-                                            <Row>
-                                                {item.map(prop => (
-                                                    <Cell id="cell">
-                                                        <button className={styles.button}>
-                                                            {prop}
-                                                        </button>
-                                                    </Cell>
-                                                ))}
-                                            </Row>
-                                        </Slide>
-                                    ))}
-                                </TransitionGroup>
-                            </Body>
-                        </Table>
+                        </div>
+
+
 
                     </div>
 
 
 
-                </div>
+                    <div>
+                        <button onClick={() => this.tuneRowsAndColumns()} className={styles.rightSide}>button</button>
+                    </div>
 
-
-
-                <div>
-                    <h2 className={styles.rightSide}>Right side</h2>
-                </div>
-
-                <div className={styles.footerDiv}>
-                    <h2 className={styles.footer}>Footer</h2>
-                </div>
-
-
+                    <div className={styles.footerDiv}>
+                        <h2 className={styles.footer}>Footer</h2>
+                    </div>
+                </body>
+                <script>
+                    
+                </script>
             </>
 
-
+            
         );
     }
 
 
     async getProjectsFromDb(count = 1, firstId = 1) {
         
-        const response = await fetch(`project/all`); // partial load request - `project?firstId=${firstId}&count=${count}`
+        const response = await fetch(`project?firstId=${firstId}&count=${count}`); // partial load request - `project?firstId=${firstId}&count=${count}`
         const data = await response.json();
+        this.setState({ projects: data });
 
         // logic to partial load request
-        if (firstId == 1) {
-            this.setState({ projects: data });
-            //console.log(this.state.projects)
-        }
-        else {
-            //for (var i in data) {
-            //    this.state.projects.push(i);
-            //}
-            this.state.projects.push(data);
-            //console.log(this.state.projects)
-        }
+        //if (firstId == 1) {
+        //    this.setState({ projects: data });
+        //    //console.log(this.state.projects)
+        //}
+        //else {
+        //    //for (var i in data) {
+        //    //    this.state.projects.push(i);
+        //    //}
+        //    this.state.projects.push(data);
+        //    //console.log(this.state.projects)
+        //}
 
     }
 }
