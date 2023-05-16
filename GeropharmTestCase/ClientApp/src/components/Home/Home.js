@@ -1,4 +1,3 @@
-// нужный
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
@@ -102,7 +101,7 @@ export class Home extends Component {
         }
         for (let i = 0; i < possibleRows * possibleColumns; i++) {
 
-            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = this.state.projects[i].name // projects[i].name // this.state.projects[i].name //this.state.projects[i].name;
+            newArray[Math.floor(i / possibleColumns)][i % possibleColumns] = this.state.projects[i].name;
         }
 
 
