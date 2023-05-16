@@ -204,11 +204,11 @@ export class Home extends Component {
 
     async getProjectsFromDb(count = 1, firstId = 1) {
         
-        const response = await fetch(`project?firstId=${firstId}&count=${count}`); // partial load request - `project?firstId=${firstId}&count=${count}`
+        const response = await fetch(`project?firstId=${firstId}&count=${count}`); // partial load request - `project?firstId=${firstId}&count=${count}` 
         const data = await response.json();
         this.setState({ projects: data });
 
-        // logic to partial load request
+        // logic to partial load requests
         //if (firstId == 1) {
         //    this.setState({ projects: data });
         //    //console.log(this.state.projects)
