@@ -82,14 +82,12 @@ namespace GeropharmTestCase.Controllers
 
         private async Task<string> WriteFile(IFormFile file)
         {
-            string fileName = "";
+            string fileName;
             try
             {
                 var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
-                fileName = DateTime.Now.Ticks.ToString() + extension;
-                string directoryGoDown = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\"));
-                //string directoryGoDown = Path.Combine(Directory.GetCurrentDirectory(), "..");
-                var filePath = Path.Combine(directoryGoDown, "Upload\\Files");
+                fileName = file.Name + extension;
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Files");
 
                 if (!Directory.Exists(filePath))
                 {

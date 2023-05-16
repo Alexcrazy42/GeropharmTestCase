@@ -191,11 +191,11 @@ export class Home extends Component {
 
     async getProjectsFromDb(count = 1, firstId = 1) {
         
-        const response = await fetch(`project/all`); // запрос для недостающих проектов - `project?firstId=${firstId}&count=${count}`
+        const response = await fetch(`project/all`); // request for missing projects - `project?firstId=${firstId}&count=${count}`
         const data = await response.json();
         this.setState({ projects: data });
 
-        // логика при неполном запросе
+        // logic on partial request
         if (firstId == 1) {
             this.setState({ projects: data });
         }
