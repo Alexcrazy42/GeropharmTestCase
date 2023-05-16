@@ -193,11 +193,11 @@ export class Home extends Component {
 
 
     async getProjectsFromDb(count = 1, firstId = 1) {
-        // `project?firstId=${firstId}&count=${count}`
-        //
-        console.log(`project?firstId=${firstId}&count=${count}`);
-        const response = await fetch(`project/all`);
+        
+        const response = await fetch(`project/all`); // partial load request - `project?firstId=${firstId}&count=${count}`
         const data = await response.json();
+
+        // logic to partial load request
         if (firstId == 1) {
             this.setState({ projects: data });
             //console.log(this.state.projects)
